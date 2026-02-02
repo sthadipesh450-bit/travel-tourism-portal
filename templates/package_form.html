@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Admin{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary-gradient text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-{% if package %}pencil{% else %}plus-circle{% endif %}"></i> 
+                        {{ title }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <!-- Package Name -->
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">
+                                    <i class="bi bi-tag"></i> Package Name *
+                                </label>
+                                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="e.g., Pokhara Adventure Trek") }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.name.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Destination -->
+                            <div class="col-md-6 mb-3">
+                                <label for="destination" class="form-label">
+                                    <i class="bi bi-geo-alt"></i> Destination *
+                                </label>
+                                {{ form.destination(class="form-control" + (" is-invalid" if form.destination.errors else ""), placeholder="e.g., Pokhara") }}
+                                {% if form.destination.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.destination.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-text-paragraph"></i> Description *
+                            </label>
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="4", placeholder="Describe the tour package in detail...") }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.description.errors[0] }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Minimum 20 characters, maximum 2000 characters</small>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Duration -->
+                            <div class="col-md-4 mb-3">
+                                <label for="duration" class="form-label">
+                                    <i class="bi bi-calendar"></i> Duration (days) *
+                                </label>
+                                {{ form.duration(class="form-control" + (" is-invalid" if form.duration.errors else ""), placeholder="e.g., 5") }}
+                                {% if form.duration.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.duration.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Price -->
+                            <div class="col-md-4 mb-3">
+                                <label for="price" class="form-label">
+                                    <i class="bi bi-currency-dollar"></i> Price (NPR) *
+                                </label>
+                                {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else ""), placeholder="e.g., 15000") }}
+                                {% if form.price.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.price.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Available Slots -->
+                            <div class="col-md-4 mb-3">
+                                <label for="available_slots" class="form-label">
+                                    <i class="bi bi-people"></i> Available Slots *
+                                </label>
+                                {{ form.available_slots(class="form-control" + (" is-invalid" if form.available_slots.errors else ""), placeholder="e.g., 25") }}
+                                {% if form.available_slots.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.available_slots.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Category -->
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">
+                                    <i class="bi bi-grid"></i> Category *
+                                </label>
+                                {{ form.category(class="form-control" + (" is-invalid" if form.category.errors else "")) }}
+                                {% if form.category.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.category.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Image URL -->
+                            <div class="col-md-6 mb-3">
+                                <label for="image_url" class="form-label">
+                                    <i class="bi bi-image"></i> Image URL
+                                </label>
+                                {{ form.image_url(class="form-control" + (" is-invalid" if form.image_url.errors else ""), placeholder="https://example.com/image.jpg") }}
+                                {% if form.image_url.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.image_url.errors[0] }}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">Use Unsplash or similar for free images</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Highlights -->
+                        <div class="mb-3">
+                            <label for="highlights" class="form-label">
+                                <i class="bi bi-star"></i> Highlights
+                            </label>
+                            {{ form.highlights(class="form-control" + (" is-invalid" if form.highlights.errors else ""), rows="3", placeholder="e.g., Mountain trekking, Phewa Lake, Paragliding, Mountain views") }}
+                            {% if form.highlights.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.highlights.errors[0] }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Comma-separated highlights</small>
+                        </div>
+                        
+                        <!-- What's Included -->
+                        <div class="mb-3">
+                            <label for="includes" class="form-label">
+                                <i class="bi bi-check-circle"></i> What's Included
+                            </label>
+                            {{ form.includes(class="form-control" + (" is-invalid" if form.includes.errors else ""), rows="3", placeholder="e.g., Accommodation, Meals, Guide, Transportation") }}
+                            {% if form.includes.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.includes.errors[0] }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Comma-separated items</small>
+                        </div>
+                        
+                        <!-- What's Excluded -->
+                        <div class="mb-3">
+                            <label for="excludes" class="form-label">
+                                <i class="bi bi-x-circle"></i> What's Excluded
+                            </label>
+                            {{ form.excludes(class="form-control" + (" is-invalid" if form.excludes.errors else ""), rows="3", placeholder="e.g., Personal expenses, Travel insurance") }}
+                            {% if form.excludes.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.excludes.errors[0] }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">Comma-separated items</small>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('manage_packages') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> 
+                                {% if package %}Update Package{% else %}Create Package{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        font-weight: 500;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .card {
+        border: none;
+    }
+</style>
+{% endblock %}

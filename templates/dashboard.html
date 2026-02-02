@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Travel & Tourism Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">
+        <i class="bi bi-speedometer2"></i> Welcome, {{ user.username }}!
+    </h1>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="bi bi-bag-check" style="font-size: 2.5rem;"></i>
+                <div class="stat-number">{{ total_bookings }}</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="bi bi-clock-history" style="font-size: 2.5rem;"></i>
+                <div class="stat-number">{{ pending_bookings }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <i class="bi bi-check-circle" style="font-size: 2.5rem;"></i>
+                <div class="stat-number">{{ confirmed_bookings }}</div>
+                <div class="stat-label">Confirmed</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bookings Table -->
+    <div class="card">
+        <div class="card-header bg-primary-gradient text-white">
+            <h4 class="mb-0"><i class="bi bi-list-check"></i> Your Bookings</h4>
+        </div>
+        <div class="card-body">
+            {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Package</th>
+                                <th>Destination</th>
+                                <th>Travel Date</th>
+                                <th>Travelers</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td><strong>{{ booking.package.name }}</strong></td>
+                                <td>
+                                    <i class="bi bi-geo-alt"></i> {{ booking.package.destination }}
+                                </td>
+                                <td>
+                                    <i class="bi bi-calendar-event"></i> 
+                                    {{ booking.travel_date.strftime('%B %d, %Y') }}
+                                </td>
+                                <td>
+                                    <i class="bi bi-people"></i> {{ booking.number_of_travelers }}
+                                </td>
+                                <td><strong>NPR {{ "{:,.0f}".format(booking.total_amount) }}</strong></td>
+                                <td>
+                                    <span class="badge badge-{{ booking.status }}">
+                                        {{ booking.status.upper() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('package_detail', package_id=booking.package_id) }}" 
+                                       class="btn btn-sm btn-primary" title="View Package">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if booking.status == 'pending' %}
+                                    <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" 
+                                          style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Cancel Booking">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: var(--gray);"></i>
+                    <h4 class="mt-3">No bookings yet</h4>
+                    <p class="text-muted">Start exploring our packages and book your first trip!</p>
+                    <a href="{{ url_for('packages') }}" class="btn btn-primary mt-3">
+                        <i class="bi bi-search"></i> Browse Packages
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

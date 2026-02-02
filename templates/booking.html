@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Book {{ package.name }} - Travel & Tourism Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">
+        <i class="bi bi-calendar-check"></i> Complete Your Booking
+    </h1>
+    
+    <div class="row">
+        <!-- Package Summary -->
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <img src="{{ package.image_url }}" class="card-img-top" alt="{{ package.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ package.name }}</h5>
+                    <p class="text-muted">
+                        <i class="bi bi-geo-alt-fill text-primary"></i> {{ package.destination }}
+                    </p>
+                    <hr>
+                    <div class="mb-2">
+                        <strong>Duration:</strong> {{ package.duration }} days
+                    </div>
+                    <div class="mb-2">
+                        <strong>Price per person:</strong><br>
+                        <span id="price_per_person" class="package-price">{{ package.price }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Available Slots:</strong> {{ package.available_slots }}
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5>Total Amount</h5>
+                        <div class="package-price">
+                            NPR <span id="total_amount_display">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Booking Form -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('book_package', package_id=package.id) }}" class="needs-validation" novalidate>
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Travel Date -->
+                        <div class="mb-4">
+                            <label for="travel_date" class="form-label">
+                                <i class="bi bi-calendar-event text-primary"></i> Travel Date
+                            </label>
+                            {{ form.travel_date(class="form-control", required=true) }}
+                            <small class="form-text text-muted">
+                                Select your preferred travel date (must be a future date)
+                            </small>
+                            {% if form.travel_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.travel_date.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Number of Travelers -->
+                        <div class="mb-4">
+                            <label for="number_of_travelers" class="form-label">
+                                <i class="bi bi-people text-primary"></i> Number of Travelers
+                            </label>
+                            {{ form.number_of_travelers(class="form-control", min=1, max=package.available_slots, required=true) }}
+                            <small class="form-text text-muted">
+                                Maximum {{ package.available_slots }} travelers (based on availability)
+                            </small>
+                            {% if form.number_of_travelers.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.number_of_travelers.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Special Requests -->
+                        <div class="mb-4">
+                            <label for="special_requests" class="form-label">
+                                <i class="bi bi-chat-dots text-primary"></i> Special Requests (Optional)
+                            </label>
+                            {{ form.special_requests(class="form-control", rows=4, placeholder="Any special requirements or requests?") }}
+                            <small class="form-text text-muted">
+                                Let us know if you have any dietary restrictions, accessibility needs, or other special requests
+                            </small>
+                            {% if form.special_requests.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.special_requests.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Booking Information:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Your booking will be in <strong>pending</strong> status until confirmed by our team</li>
+                                <li>You can cancel pending bookings anytime from your dashboard</li>
+                                <li>Payment instructions will be sent via email after confirmation</li>
+                                <li>Please review the package details carefully before booking</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('package_detail', package_id=package.id) }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Confirm Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

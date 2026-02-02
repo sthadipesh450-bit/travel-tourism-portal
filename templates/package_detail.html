@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ package.name }} - Travel & Tourism Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Package Image and Info -->
+        <div class="col-lg-8">
+            <div class="card">
+                <img src="{{ package.image_url }}" class="card-img-top" alt="{{ package.name }}" style="height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <span class="badge badge-{{ package.category|lower }} mb-3">{{ package.category }}</span>
+                    <h1 class="card-title">{{ package.name }}</h1>
+                    <p class="text-muted">
+                        <i class="bi bi-geo-alt-fill text-primary"></i> {{ package.destination }}
+                    </p>
+                    
+                    <hr>
+                    
+                    <h4><i class="bi bi-info-circle"></i> Description</h4>
+                    <p>{{ package.description }}</p>
+                    
+                    {% if package.highlights %}
+                    <h4 class="mt-4"><i class="bi bi-star"></i> Highlights</h4>
+                    <p>{{ package.highlights }}</p>
+                    {% endif %}
+                    
+                    {% if package.includes %}
+                    <h4 class="mt-4"><i class="bi bi-check-circle text-success"></i> What's Included</h4>
+                    <p>{{ package.includes }}</p>
+                    {% endif %}
+                    
+                    {% if package.excludes %}
+                    <h4 class="mt-4"><i class="bi bi-x-circle text-danger"></i> What's Excluded</h4>
+                    <p>{{ package.excludes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Booking Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <div class="package-price text-center mb-4">
+                        NPR {{ "{:,.0f}".format(package.price) }}
+                        <small>/person</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <i class="bi bi-calendar-event text-primary"></i>
+                        <strong>Duration:</strong> {{ package.duration }} days
+                    </div>
+                    
+                    <div class="mb-3">
+                        <i class="bi bi-people text-primary"></i>
+                        <strong>Available Slots:</strong> 
+                        <span id="available_slots">{{ package.available_slots }}</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    {% if session.user_id %}
+                        {% if package.available_slots > 0 %}
+                            <a href="{{ url_for('book_package', package_id=package.id) }}" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-calendar-check"></i> Book Now
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary btn-lg w-100" disabled>
+                                <i class="bi bi-x-circle"></i> Fully Booked
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted text-center mb-3">Please login to book this package</p>
+                        <a href="{{ url_for('login') }}" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-person-plus"></i> Register
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

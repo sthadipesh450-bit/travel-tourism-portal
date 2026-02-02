@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Travel & Tourism Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="form-container">
+        <h2 class="text-center mb-4">
+            <i class="bi bi-person-plus-fill text-primary"></i> Create Account
+        </h2>
+        <p class="text-center text-muted mb-4">Join TravelHub and start your adventure today!</p>
+        
+        <form method="POST" action="{{ url_for('register') }}" class="needs-validation" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="username" class="form-label">
+                    <i class="bi bi-person"></i> Username
+                </label>
+                {{ form.username(class="form-control", placeholder="Enter username") }}
+                {% if form.username.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    <i class="bi bi-envelope"></i> Email Address
+                </label>
+                {{ form.email(class="form-control", type="email", placeholder="Enter email", required=true) }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Phone -->
+            <div class="mb-3">
+                <label for="phone" class="form-label">
+                    <i class="bi bi-telephone"></i> Phone Number
+                </label>
+                {{ form.phone(class="form-control", placeholder="Enter phone number") }}
+                {% if form.phone.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.phone.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    <i class="bi bi-lock"></i> Password
+                </label>
+                {{ form.password(class="form-control", placeholder="Enter password", required=true) }}
+                <div class="progress mt-2" style="height: 5px;">
+                    <div id="password-strength" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+                <small id="password-strength-text" class="form-text text-muted"></small>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label">
+                    <i class="bi bi-lock-fill"></i> Confirm Password
+                </label>
+                {{ form.confirm_password(class="form-control", placeholder="Confirm password", required=true) }}
+                {% if form.confirm_password.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.confirm_password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-check-circle"></i> Create Account
+                </button>
+            </div>
+        </form>
+        
+        <!-- Login Link -->
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                Already have an account? 
+                <a href="{{ url_for('login') }}" class="text-primary">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

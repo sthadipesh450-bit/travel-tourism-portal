@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+===========================================================================
+BASE TEMPLATE - TRAVEL & TOURISM PORTAL
+BIT233 - Web Technology Assignment
+
+This is the base/parent template that all other pages inherit from.
+
+JINJA2 TEMPLATE ENGINE:
+- Jinja2 is Flask's templating engine
+- Allows dynamic HTML generation
+- Syntax: double curly braces for output, curly brace percent for logic
+- block defines sections child templates can override
+- extends makes a template inherit from this file
+===========================================================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Travel & Tourism Portal - Explore amazing tour packages and book your dream vacation">
+    <meta name="keywords" content="travel, tourism, tour packages, vacation, booking">
+    <meta name="author" content="BIT233 Student">
+    
+    <!-- Title with dynamic page name -->
+    <title>{% block title %}Travel & Tourism Portal{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS - Latest version -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons for icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Additional CSS that child templates can add -->
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- 
+    ===========================================================================
+    NAVIGATION BAR
+    ===========================================================================
+    Responsive navigation using Bootstrap
+    - Collapses to hamburger menu on mobile
+    - Shows different options based on login status
+    -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <!-- Brand/Logo -->
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-airplane-fill"></i>
+                TravelHub
+            </a>
+            
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Public Links (Always Visible) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('packages') }}">
+                            <i class="bi bi-backpack"></i> Packages
+                        </a>
+                    </li>
+                    
+                    <!-- 
+                    Conditional Links based on Login Status
+                    session.user_id exists only when user is logged in
+                    -->
+                    {% if session.user_id %}
+                        <!-- Links for Logged-In Users -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('profile') }}">
+                                <i class="bi bi-person-circle"></i> Profile
+                            </a>
+                        </li>
+                        
+                        <!-- Admin-Only Link -->
+                        {% if session.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                                <i class="bi bi-shield-lock"></i> Admin
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">
+                                <i class="bi bi-box-arrow-right"></i> Logout ({{ session.username }})
+                            </a>
+                        </li>
+                    {% else %}
+                        <!-- Links for Guest Users -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-secondary ms-2" href="{{ url_for('register') }}">
+                                <i class="bi bi-person-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 
+    ===========================================================================
+    FLASH MESSAGES
+    ===========================================================================
+    Display temporary messages to users (success, error, warning, info)
+    Messages are set in Flask with flash('message', 'category')
+    -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <!-- Icon based on category -->
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill"></i>
+                        {% elif category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        {% elif category == 'warning' %}
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill"></i>
+                        {% endif %}
+                        
+                        {{ message }}
+                        
+                        <!-- Close button -->
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- 
+    ===========================================================================
+    MAIN CONTENT AREA
+    ===========================================================================
+    This block is overridden by child templates
+    Each page defines its own content here
+    -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- 
+    ===========================================================================
+    FOOTER
+    ===========================================================================
+    Site footer with links and information
+    -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="row">
+                    <!-- About Section -->
+                    <div class="col-md-4 mb-4">
+                        <h4 class="footer-heading">
+                            <i class="bi bi-airplane-fill"></i> TravelHub
+                        </h4>
+                        <p style="color: rgba(255, 255, 255, 0.7);">
+                            Your trusted partner for unforgettable travel experiences. 
+                            Explore the world with our carefully curated tour packages.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="#" class="social-link" title="Instagram">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link" title="Twitter">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link" title="YouTube">
+                                <i class="bi bi-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-md-4 mb-4">
+                        <h4 class="footer-heading">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="{{ url_for('index') }}">Home</a></li>
+                            <li><a href="{{ url_for('packages') }}">Tour Packages</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="col-md-4 mb-4">
+                        <h4 class="footer-heading">Contact Us</h4>
+                        <ul class="footer-links">
+                            <li>
+                                <i class="bi bi-geo-alt-fill"></i>
+                                Kathmandu, Nepal
+                            </li>
+                            <li>
+                                <i class="bi bi-telephone-fill"></i>
+                                +977 1234567890
+                            </li>
+                            <li>
+                                <i class="bi bi-envelope-fill"></i>
+                                info@travelhub.com
+                            </li>
+                            <li>
+                                <i class="bi bi-clock-fill"></i>
+                                Mon - Fri: 9:00 AM - 6:00 PM
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-bottom">
+                <p>&copy; 2024 TravelHub. All Rights Reserved. | BIT233 Web Technology Assignment</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 
+    ===========================================================================
+    JAVASCRIPT LIBRARIES
+    ===========================================================================
+    Load scripts at the end for better page performance
+    -->
+    
+    <!-- Bootstrap Bundle (includes Popper.js for dropdowns) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery (optional, for additional functionality) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <!-- Additional JavaScript that child templates can add -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+<!--
+===========================================================================
+JINJA2 TEMPLATE CONCEPTS:
+
+1. Template Inheritance:
+   - extends inherits from parent
+   - block defines overridable sections
+   - Promotes code reusability
+
+2. Variables:
+   - Double curly braces output variable value
+   - url_for generates URLs
+   - session.user_id accesses session data
+
+3. Conditionals:
+   - if statements with endif
+   - if/else statements
+   - if/elif/endif chains
+
+4. Loops:
+   - for loops with endfor
+   - loop.index gives current iteration
+   - loop.first is True if first iteration
+
+5. Filters:
+   - Pipe operator for filters (upper, length, default)
+
+6. Functions:
+   - url_for('route_name') - Generate URL for route
+   - get_flashed_messages() - Retrieve flash messages
+   - url_for('static', filename='path') - Link to static files
+
+Benefits:
+- Separation of concerns (logic in Python, presentation in HTML)
+- Code reusability through inheritance
+- Security (automatic HTML escaping)
+- Dynamic content generation
+===========================================================================
+-->
