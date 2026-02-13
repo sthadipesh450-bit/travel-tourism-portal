@@ -578,5 +578,5 @@ If you encounter any issues or have questions:
 
 ---
 
-*Last Updated: February 2024*
+_Last Updated: February 2024_
  
