@@ -578,9 +578,5 @@ If you encounter any issues or have questions:
 
 ---
 
-_Last Updated: February 2024_
-#   t r a v e l - t o u r i s m - p o r t a l 
- 
- #   t r a v e l - t o u r i s m - p o r t a l 
- 
+*Last Updated: February 2024*
  
